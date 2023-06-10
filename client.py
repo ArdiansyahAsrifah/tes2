@@ -28,6 +28,17 @@ def download_file(file_name):
 
     ftp.quit()
 
+# Fungsi untuk mendapatkan daftar file di server FTP
+def get_file_list():
+    ftp = FTP(ftp_host)
+    ftp.login(user=ftp_user, passwd=ftp_password)
+
+    file_list = ftp.nlst()
+
+    ftp.quit()
+
+    return file_list
+
 # Route utama
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -43,9 +54,16 @@ def index():
             file_name = request.form['download_file']
             if file_name == '':
                 return render_template('index.html', error_message='Mohon masukkan nama file yang ingin diunduh')
-            download_file(file_name)
-            return render_template('downloaded.html', file_name=file_name)
-    return render_template('index.html')
+            return redirect('/download/{}'.format(file_name))
+
+    file_list = get_file_list()
+    return render_template('index.html', file_list=file_list)
+
+# Route unduhan file
+@app.route('/download/<path:file_name>')
+def download(file_name):
+    download_file(file_name)
+    return render_template('downloaded.html', file_name=file_name)
 
 # Route setelah mengunggah file
 @app.route('/uploaded')

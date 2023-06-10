@@ -58,6 +58,72 @@
             color: #70e64b;
             text-align: center;
         }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        .download-button {
+            display: inline-block;
+            background-color: #347dff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .table-wrapper {
+        margin-top: 20px;
+        }
+
+        .table-wrapper table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #292d36;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-wrapper th,
+        .table-wrapper td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #444;
+        }
+
+        .table-wrapper th {
+        background-color: #347dff;
+        color: #fff;
+        }
+
+        .table-wrapper tr:hover {
+        background-color: #1e7be6;
+        }
+
+        .download-button {
+        display: inline-block;
+        background-color: #347dff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        }
+
+        .download-button:hover {
+        background-color: #1e7be6;
+        }
+
+
     </style>
 </head>
 <body>
@@ -78,7 +144,19 @@
                 <input type="text" name="download_file" placeholder="File Name">
                 <input type="submit" name="submit" value="Download File">
             </form>
-        </div>
-    </div>
+            <div class="table-wrapper">
+                <table>
+                  <tr>
+                    <th>File Name</th>
+                    <th>Download</th>
+                  </tr>
+                  {% for file_name in file_list %}
+                  <tr>
+                    <td>{{ file_name }}</td>
+                    <td><a class="download-button" href="/download/{{ file_name }}">Download</a></td>
+                  </tr>
+                  {% endfor %}
+                </table>
+            </div>              
 </body>
 </html>
