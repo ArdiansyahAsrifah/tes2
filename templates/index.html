@@ -2,22 +2,20 @@
 <html>
 <head>
     <title>FTP Client</title>
-    <script>
-        function showMessage(message) {
-            alert(message);
-        }
-    </script>
 </head>
 <body>
     <h1>FTP Client</h1>
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
     <form method="POST" enctype="multipart/form-data" action="/">
         <input type="file" name="upload_file">
-        <input type="submit" name="submit" value="Upload File" onclick="showMessage('Mohon pilih file yang ingin diunggah')">
+        <input type="submit" name="submit" value="Upload File">
     </form>
     <br>
     <form method="POST" action="/">
         <input type="text" name="download_file" placeholder="Nama File">
-        <input type="submit" name="submit" value="Download File" onclick="showMessage('Mohon masukkan nama file yang ingin diunduh')">
+        <input type="submit" name="submit" value="Download File">
     </form>
 </body>
 </html>
