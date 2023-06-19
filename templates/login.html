@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>File Bridge</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -30,7 +31,6 @@
             margin-bottom: 20px;
         }
 
-        .form-wrapper input[type="file"],
         .form-wrapper input[type="text"] {
             width: 100%;
             padding: 10px;
@@ -92,21 +92,6 @@
             background-color: #1e7be6;
         }
 
-        .logout-button {
-            display: inline-block;
-            background-color: #ff6156;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .logout-button:hover {
-            background-color: #ff4530;
-        }
-
     </style>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
@@ -139,21 +124,17 @@
         {% endif %}
 
         <div class="form-wrapper">
-            <form method="POST" enctype="multipart/form-data" action="/" onsubmit="return validateFileUpload();">
-                <input type="file" name="upload_file" accept=".txt,.pdf,.doc,.docx">
-                <input type="submit" name="submit" value="Upload File">
-            </form>
-        </div>
+            <form action="/login" method="post">
+                <label for="fname">Host: </label>
+                <input type="text" id ="host" name="host">
+                <label for="fname">Username: </label>
+                <input type="text" id="user" name="user">
+                <label for="fname">Password: </label>
+                <input type="text" id="password" name="password">
+                <label for="fname">Port: </label>
+                <input type="text" id="port" name="port">
 
-        <div class="form-wrapper">
-            <form method="GET" action="/ftp">
-                <input type="submit" class="ftp-button" value="Jelajahi FTP">
-            </form>
-        </div>
-
-        <div class="form-wrapper">
-            <form method="GET" action="/logout">
-                <input type="submit" class="logout-button" value="Log Out">
+                <input type="submit" class="ftp-button" value="Login">
             </form>
         </div>
     </div>

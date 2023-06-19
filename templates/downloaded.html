@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Downloaded - FTP Client</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,25 +36,41 @@
         }
 
         .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #347dff;
-            text-decoration: none;
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #fff;
+        text-decoration: none;
+        background-color: #347dff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
         .back-link:hover {
-            text-decoration: underline;
+            background-color: #1e7be6;
         }
     </style>
 </head>
 <body>
-    <h1>File berhasil di unduh dari server FTP.</h1>
+    <h1>File berhasil diunduh dari server FTP.</h1>
     <div class="container">
         <div class="message success-message">
-            <p>Your file has been successfully downloaded.</p>
             <a class="back-link" href="/">Back to Home</a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            iziToast.success({
+                title: 'Success',
+                message: 'File berhasil diunduh!',
+                position: 'topRight',
+                timeout: 5000,
+            });
+        });
+    </script>
 </body>
 </html>

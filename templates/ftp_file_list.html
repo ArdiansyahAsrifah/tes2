@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Bridge - Daftar File FTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast/dist/css/iziToast.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/izitoast/dist/js/iziToast.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1d2026;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+        }
+
+        li {
+            background-color: #292d36;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 1350px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            position: relative;
+            cursor: pointer;
+        }
+
+        li.selected {
+            background-color: #3b3f4e;
+        }
+
+        .download-button {
+            position: absolute;
+            top: 50%;
+            right: 250px;
+            transform: translateY(-50%);
+            display: inline-block;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 50%;
+            right: 140px;
+            transform: translateY(-50%);
+            display: inline-block;
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .rename-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: inline-block;
+            background-color: #ff9800;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .rename-button:hover {
+            background-color: #f57c00;
+        }
+
+        .container {
+            width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: #347dff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #1e7be6;
+        }
+
+        .download-container {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .search-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .search-button {
+            background-color: #347dff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #1e7be6;
+        }
+
+        .search-indicator {
+            font-style: italic;
+            margin-top: 10px;
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        .refresh-button {
+            display: inline-block;
+            background-color: #347dff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .refresh-button:hover {
+            background-color: #1e7be6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Daftar File FTP</h1>
+
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Cari nama file">
+        <button id="search-button" class="search-button">Search</button>
+    </div>
+
+    <ul>
+        {% for file_name in file_list %}
+            <li class="file-item">
+                {{ file_name }}
+                <div class="download-container">
+                    <a href="/download/{{ file_name }}" class="download-button">Download</a>
+                    <a href="/delete/{{ file_name }}" class="delete-button">Delete</a>
+                    <a href="/rename/{{ file_name }}" class="rename-button">Rename</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="container">
+        <a href="/" class="back-button">Kembali</a>
+    </div>
+
+    <div class="container">
+        <button id="refresh-button" class="refresh-button">Refresh</button>
+    </div>
+
+    <script>
+        const downloadButtons = document.querySelectorAll('.download-button');
+        downloadButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                iziToast.success({
+                    title: 'Sukses',
+                    message: 'File berhasil diunduh.',
+                    position: 'topRight',
+                });
+            });
+        });
+
+
+        const fileItems = document.querySelectorAll('.file-item');
+        fileItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (item.classList.contains('selected')) {
+                    item.classList.remove('selected');
+                } else {
+                    fileItems.forEach(otherItem => {
+                        otherItem.classList.remove('selected');
+                    });
+                    item.classList.add('selected');
+                }
+            });
+        });
+
+        const searchButton = document.getElementById('search-button');
+        const searchInput = document.getElementById('search-input');
+        const refreshButton = document.getElementById('refresh-button');
+
+        searchButton.addEventListener('click', () => {
+            const searchValue = searchInput.value.toLowerCase();
+            let matchCount = 0;
+
+            fileItems.forEach(item => {
+                const fileName = item.innerText.toLowerCase();
+                if (fileName.includes(searchValue)) {
+                    item.style.display = 'block';
+                    matchCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (matchCount > 0) {
+                iziToast.show({
+                    title: 'Sukses',
+                    message: `Ditemukan ${matchCount} file dengan nama yang sesuai.`,
+                    position: 'topRight',
+                    color: 'green',
+                });
+            } else {
+                iziToast.show({
+                    title: 'Informasi',
+                    message: 'Tidak ditemukan file dengan nama yang sesuai.',
+                    position: 'topRight',
+                    color: 'blue',
+                });
+            }
+        });
+
+        refreshButton.addEventListener('click', () => {
+            // Mengembalikan tampilan semua file
+            fileItems.forEach(item => {
+                item.style.display = 'block';
+                item.classList.remove('selected');
+            });
+            searchInput.value = ''; // Mengosongkan input pencarian
+
+            // Menampilkan iziToast setelah refresh
+            iziToast.show({
+                title: 'Sukses',
+                message: 'Daftar file berhasil diperbarui.',
+                position: 'topRight',
+                color: 'green',
+            });
+        });
+    </script>
+</body>
+</html>
